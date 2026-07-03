@@ -7,21 +7,23 @@ import '@/global.css';
 
 import { Platform } from 'react-native';
 
+const haunted = {
+  text: '#ffffff',
+  background: '#000000',
+  backgroundElement: '#1a1a1d',
+  backgroundSelected: '#2a2a2e',
+  textSecondary: '#a0a0aa',
+  accent: '#e10600',
+  boardWell: '#141416',
+  pieceRed: '#c41e3a',
+  pieceGhost: '#e8e8f0',
+} as const;
+
+// Horror 4 Drop is always presented in its haunted dark palette, regardless of
+// system light/dark preference, to match the game's fixed black/red branding.
 export const Colors = {
-  light: {
-    text: '#000000',
-    background: '#ffffff',
-    backgroundElement: '#F0F0F3',
-    backgroundSelected: '#E0E1E6',
-    textSecondary: '#60646C',
-  },
-  dark: {
-    text: '#ffffff',
-    background: '#000000',
-    backgroundElement: '#212225',
-    backgroundSelected: '#2E3135',
-    textSecondary: '#B0B4BA',
-  },
+  light: haunted,
+  dark: haunted,
 } as const;
 
 export type ThemeColor = keyof typeof Colors.light & keyof typeof Colors.dark;
