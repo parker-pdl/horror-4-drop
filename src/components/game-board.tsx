@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { ImageBackground, Pressable, StyleSheet, View, useWindowDimensions } from 'react-native';
+import { useEffect, useState } from 'react';
+import { ImageBackground, Platform, Pressable, StyleSheet, View, useWindowDimensions } from 'react-native';
 
 import { Colors, MaxContentWidth, Spacing } from '@/constants/theme';
 import { Board, COLS, ROWS } from '@/lib/connect-four';
@@ -19,21 +19,36 @@ type GameBoardProps = {
 };
 
 export function GameBoard({ board, onDropInColumn, lastDrop, winningCells, disabled }: GameBoardProps) {
-  const { width, height } = useWindowDimensions();
+  const dims = useWindowDimensions();
+  // On web the statically exported page is prerendered at 0x0, and React keeps the
+  // prerendered inline sizes when hydrating, which left the board at its minimum
+  // size. Render the prerender-matching size first, then switch to the real window
+  // size after mount so the DOM actually updates.
+  const [webSize, setWebSize] = useState<{ width: number; height: number } | null>(null);
+  useEffect(() => {
+    if (Platform.OS !== 'web' || typeof window === 'undefined') return;
+    const update = () => setWebSize({ width: window.innerWidth, height: window.innerHeight });
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, []);
+  const isWeb = Platform.OS === 'web';
+  const width = isWeb ? (webSize?.width ?? 0) : dims.width;
+  const height = isWeb ? (webSize?.height ?? 0) : dims.height;
   const [hoveredCol, setHoveredCol] = useState<number | null>(null);
 
   const boardWidth = Math.min(width, MaxContentWidth) - Spacing.four * 2;
   // The perspective tilt makes the board's near (bottom) edge project visually
   // wider than its flat layout box, so shrink the width budget it's sized against.
-  const TILT_WIDTH_SAFETY = 0.88;
+  const TILT_WIDTH_SAFETY = 0.92;
   const maxCellFromWidth = Math.floor((boardWidth * TILT_WIDTH_SAFETY) / COLS);
 
   // Leave room for the title, difficulty picker, status banner, and footer above/below the board.
-  const reservedHeight = 380;
-  const availableHeight = Math.max(220, height - reservedHeight);
+  const reservedHeight = 460;
+  const availableHeight = Math.max(260, height - reservedHeight);
   const maxCellFromHeight = Math.floor(availableHeight / ROWS);
 
-  const cellSize = Math.max(36, Math.min(90, maxCellFromWidth, maxCellFromHeight));
+  const cellSize = Math.max(40, Math.min(120, maxCellFromWidth, maxCellFromHeight));
 
   const isWinningCell = (row: number, col: number) =>
     winningCells.some(([winRow, winCol]) => winRow === row && winCol === col);
@@ -97,7 +112,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.55)',
+    backgroundColor: 'rgba(0,0,0,0.86)',
   },
   frameHighlight: {
     position: 'absolute',
