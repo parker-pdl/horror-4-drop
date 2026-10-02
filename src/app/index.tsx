@@ -37,7 +37,7 @@ export default function GameScreen() {
 
         <ExtrudedTitle>Horror 4 Drop</ExtrudedTitle>
         <ThemedText type="small" themeColor="textSecondary" style={styles.tagline}>
-          Haunted Connect Four
+          Haunted Four in a Row
         </ThemedText>
 
         <DifficultyPicker value={game.difficulty} onChange={game.setDifficulty} disabled={game.isAiThinking} />
