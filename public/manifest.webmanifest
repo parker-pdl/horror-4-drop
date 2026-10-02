@@ -1,11 +1,11 @@
 {
-  "name": "Horror 4 Drop - Haunted Connect Four",
+  "name": "Horror 4 Drop - Haunted Four in a Row",
   "short_name": "Horror 4 Drop",
-  "description": "A playful, ghost-themed twist on classic Connect 4.",
+  "description": "A playful, ghost-themed four-in-a-row drop game.",
   "start_url": "/",
   "id": "/",
   "display": "standalone",
-  "orientation": "portrait",
+  "orientation": "any",
   "background_color": "#000000",
   "theme_color": "#000000",
   "icons": [
